@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой первый интерфейс python</title>
+
+    <script src="eel.js"></script>
+    <link rel="shortcut icon" href="src/cloud.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main">
+
+        <div class="title">В каком городе вы хотите узнать погоду?</div>
+    
+    
+        <div class="input"><input id='location' type="text" placeholder="Введите назвние города " value="Москва, Россия"></div>
+
+        <div class="sumbit"><button id="show">Узнать погоду</button></div>
+
+        <div id="error" class="hidden">
+
+        </div>
+
+        <div id="info">
+            <div class="place"></div>
+            <div class="time"></div>
+            <div class="status-text"></div>
+            <div class="status">
+                <div class="img"></div>
+                <div class="temp"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        async function display_weather() {
+            let place = document.getElementById('location').value;
+
+            let res = await eel.get_weather(place)();
+            if(typeof(res) == 'string') {
+                document.querySelector('#info').classList.add('hidden');
+                document.querySelector('#error').classList.remove('hidden');
+                document.querySelector('#error').innerHTML = res;
+            } else {
+                document.querySelector('#info').classList.remove('hidden');
+                document.querySelector('#error').classList.add('hidden');
+
+                document.querySelector('#info>.place').innerHTML = res['place'];
+                document.querySelector('#info>.time').innerHTML = res['time']['day'] + '.' + res['time']['month'] + '.' + res['time']['year'] + ' ' + res['time']['hour'] + ':' + res['time']['minute'];
+                
+                if(res['status'] == 'Clouds') {
+                    document.querySelector('#info>.status-text').innerHTML = 'Облачно';
+                    document.querySelector('#info>.status>.img').innerHTML = '<img src="src/cloud.png" alt="">';
+                } else if(res['status'] == 'Clear') {
+                    document.querySelector('#info>.status-text').innerHTML = 'Ясно';
+                    document.querySelector('#info>.status>.img').innerHTML = '<img src="src/clear.png" alt="">';
+                } else if(res['status'] == 'Rain') {
+                    document.querySelector('#info>.status-text').innerHTML = 'Дождь';
+                    document.querySelector('#info>.status>.img').innerHTML = '<img src="src/rain.png" alt="">';
+                };
+
+                document.querySelector('#info>.status>.temp').innerHTML = Math.round(res['temp']) + '<span>&#176;C</span>';
+            }
+
+            
+        }
+
+        document.getElementById('show').addEventListener('click', function() {
+            display_weather()
+        });
+
+    </script>
+</body>
+</html>
