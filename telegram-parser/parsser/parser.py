@@ -27,6 +27,7 @@ CHANNEL_NAME = '@world_news_chn'
 # функция по получению новых постов
 def get_new_post():
     # парсим нужный сайт
+
     r = requests.get('https://rozetked.me/news')
     html = BS(r.content, 'html.parser')
 
@@ -90,8 +91,13 @@ def send_post(text, pic, lastpost, title):
     file.close
 
 # бесконечная проверка с произвольным перерывом
-if __name__ == '__main__':
-    while True:
-        get_new_post()
-        print(f'Следущая проверка будет через {sleep_time} минут')
-        time.sleep(sleep_time*60)
+# if __name__ == '__main__':
+#     while True:
+#         get_new_post()
+#         print(f'Следущая проверка будет через {sleep_time} минут')
+#         time.sleep(sleep_time*60)
+
+while True:
+    get_new_post()
+    print(f'Следущая проверка будет через {sleep_time} минут')
+    time.sleep(sleep_time*60)
