@@ -10,19 +10,12 @@ while (sleep_time < 1) or (sleep_time > 60):
     print('Введите правильное время')
     sleep_time = int(input('Введите интервал для проверки постов ( min. 1 минута, max. 60 мин ) : '))
 
-# chn = input('Введите id вашего канала (в формате @channel_name) : ')
-
-# while (chn[0] != '@'):
-#     print('Введите правильное имя канала')
-#     chn = input('Введите id вашего канала (в формате @channel_name) : ')
-#     if (chn[0] == '@'):
-#         break
 
 print('Go!')
 
 # токен для бота и id телеграмм канала
 BOT_TOKEN = '1321213395:AAGKL_ymQGE1FZ0Te4h-y97quQO9NWtxqfc'
-CHANNEL_NAME = '@world_news_chn'
+CHANNEL_NAME = '474103257'
 
 # функция по получению новых постов
 def get_new_post():
@@ -32,14 +25,8 @@ def get_new_post():
     html = BS(r.content, 'html.parser')
 
     # вытаскиваем все ссылки
-    # title = html.select('.post_new-title > a')
-    # article = title[0].attrs['href']
 
-    stuff = html.find("div", {"am-card":["normal"]})
-    stuff1 = stuff.find("div", {"am-card-info":[""]})
-    stuff3 = stuff1.find("a").attrs["href"]
-
-    print(stuff3)
+    article = html.find("div", {"am-card":["normal"]}).find(("div", {"am-card-info":[""]})).find("a").attrs["href"]
 
     # передаем последнюю ссылку на проверку
     copy_new_post(article)
@@ -56,28 +43,22 @@ def copy_new_post(article):
     html = BS(r.content, 'html.parser')
 
     # достаем от туда заголовок и текст
-    title = html.select('.n_title')
-    title = title[0].text
-    text_arr = html.select('#news-data>p')
-    text = ''
-
-    # соединяем текст в одну строчку
-    for el in range(len(text_arr)):
-        text += str(text_arr[el].text)+'\n'
+    title = html.find("div", {"am-container":["product"]}).find("h1", {"am-text":["block_title"]}).text;
 
     # пробуем достать картинку ( ее может и не быть )
+    
     try:
-        src = html.select('.post-main-img>img')[0].attrs['src']
-        url = 'https://rozetked.me' + src
+        src = html.find("div", {"am-image":["photo_1"]}).find("img").attrs["src"]
+        url = 'https://самара.победа-63.рф' + src
     except:
         print('Не удалось найти изображение в статье')
         url = ''
     
     # передаем все данные на отправку
-    send_post(text, url, article, title)
+    send_post(url, article, title)
 
 # функция по отправке постов
-def send_post(text, pic, lastpost, title):
+def send_post(pic, lastpost, title):
     # открываем нашу "базу данных"
     file = open('database.txt', 'r+')
     file_text = str(file.read())
@@ -92,16 +73,9 @@ def send_post(text, pic, lastpost, title):
         file.write('|||'+str(lastpost))
         # отправляем пост на канал
         bot = telebot.TeleBot(BOT_TOKEN)
-        bot.send_message(CHANNEL_NAME, f'{title}\n\n{text}<a href="{pic}">&#160;</a>', parse_mode='HTML')
+        bot.send_message(CHANNEL_NAME, f'Появился новый товар\n{title}\n<a href="{pic}">&#160;</a>\n {lastpost}', parse_mode='HTML')
         time.sleep(1)
     file.close
-
-# бесконечная проверка с произвольным перерывом
-# if __name__ == '__main__':
-#     while True:
-#         get_new_post()
-#         print(f'Следущая проверка будет через {sleep_time} минут')
-#         time.sleep(sleep_time*60)
 
 while True:
     get_new_post()
