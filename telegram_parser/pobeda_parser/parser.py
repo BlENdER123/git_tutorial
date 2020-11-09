@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -*-
 import requests
 from bs4 import BeautifulSoup as BS
 import time
 import telebot
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 
 print('Привет, это Telegram парсер, \nВведи нужные данные и запускай меня')
 sleep_time = int(input('Введите интервал для проверки постов ( min. 1 минута, max. 60 мин ) : '))
@@ -14,8 +20,8 @@ while (sleep_time < 1) or (sleep_time > 60):
 print('Go!')
 
 # токен для бота и id телеграмм канала
-BOT_TOKEN = '1321213395:AAGKL_ymQGE1FZ0Te4h-y97quQO9NWtxqfc'
-CHANNEL_NAME = '474103257'
+BOT_TOKEN = '1230947315:AAGNOhoXoCDErUKdcXlL9QTGw4_cihOtGyU' #   
+CHANNEL_NAME = '474103257' #   
 
 # функция по получению новых постов
 def get_new_post():
@@ -43,17 +49,18 @@ def copy_new_post(article):
     html = BS(r.content, 'html.parser')
 
     # достаем от туда заголовок и текст
-    title = html.find("div", {"am-container":["product"]}).find("h1", {"am-text":["block_title"]}).text;
+    title = html.find("div", {"am-container":["product"]}).find("h1", {"am-text":["block_title"]}).text
 
     # пробуем достать картинку ( ее может и не быть )
     
-    try:
-        src = html.find("div", {"am-image":["photo_1"]}).find("img").attrs["src"]
-        url = 'https://самара.победа-63.рф' + src
-    except:
-        print('Не удалось найти изображение в статье')
-        url = ''
-    
+    # try:
+    #     src = html.find("div", {"am-image":["photo_1"]}).find("img").attrs["src"]
+    #     url = 'https://самара.победа-63.рф' + src
+    # except:
+    #     print('Не удалось найти изображение в статье')
+    #     url = ''
+    url = ''
+
     # передаем все данные на отправку
     send_post(url, article, title)
 
@@ -65,19 +72,36 @@ def send_post(pic, lastpost, title):
     file_text = file_text.split('|||')
     
     # проверяем был ли этот пост уже опубликован
-    if(str(lastpost) == str(file_text[-1])):
-        print('Пока новых новостей нет')
-        print(lastpost)
-        time.sleep(1)
-    else:
+    post_public = True
+    for i in file_text:
+        if(str(i) == str(lastpost)):
+            print('Пока новых новостей нет')
+            print(lastpost)
+            time.sleep(1)
+            post_public = False
+
+    if(post_public == True):
         file.write('|||'+str(lastpost))
         # отправляем пост на канал
         bot = telebot.TeleBot(BOT_TOKEN)
-        bot.send_message(CHANNEL_NAME, f'Появился новый товар\n{title}\n<a href="{pic}">&#160;</a>\n {lastpost}', parse_mode='HTML')
+        bot.send_message(CHANNEL_NAME, 'Появился новый товар\n' + title + '\n ' + lastpost) # 'Появился новый товар\n' + title + '\n ' + lastpost
+        # bot.send_message(CHANNEL_NAME, f'Появился новый товар\n{title}\n<a href="{pic}">&#160;</a>\n {lastpost}', parse_mode='html')
         time.sleep(1)
     file.close
+    # if(str(lastpost) == str(file_text[-1])):
+    #     print('Пока новых новостей нет')
+    #     print(lastpost)
+    #     time.sleep(1)
+    # else:
+    #     file.write('|||'+str(lastpost))
+    #     # отправляем пост на канал
+    #     bot = telebot.TeleBot(BOT_TOKEN)
+    #     bot.send_message(CHANNEL_NAME, 'Появился новый товар\n' + title + '\n ' + lastpost) # 'Появился новый товар\n' + title + '\n ' + lastpost
+    #     # bot.send_message(CHANNEL_NAME, f'Появился новый товар\n{title}\n<a href="{pic}">&#160;</a>\n {lastpost}', parse_mode='html')
+    #     time.sleep(1)
+    # file.close
 
 while True:
     get_new_post()
-    print(f'Следущая проверка будет через {sleep_time} минут')
+    print('Следущая проверка будет через ' + str(sleep_time) + ' минут')
     time.sleep(sleep_time*60)
