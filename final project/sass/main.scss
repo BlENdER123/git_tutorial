@@ -1,0 +1,157 @@
+// main styles
+
+$red: #FF3169;
+$grey: #8E8E8E;
+
+* {
+    box-sizing: border-box;
+}
+
+body{
+    background: #242424;
+    color: #ffffff;
+    font-family: "Roboto";
+}
+
+.red {
+    color: $red;
+}
+.grey {
+    color: $grey;
+}
+.bold {
+    font-weight: 500;
+    color: #fff;
+}
+
+//
+
+.flower-bg{
+    background-image: url(../img/bg.png);
+    background-repeat: no-repeat;
+    background-position: center 0;
+}
+
+// header styles
+
+.header {
+    padding-top: 50px;
+    margin-bottom: 120px;   
+    &__logo {
+        display: flex;
+    }
+    &__image {
+        margin-right: 42px;
+    }
+    &__desc {
+        font-size: 12px;
+        letter-spacing: 0.12px;
+    }
+
+    &__info {
+        text-align: right;
+    }
+    &__phone {
+        font-size: 20px;
+        font-weight: 500;
+    }
+    &__call-btn{
+        button{
+            background: transparent;
+            border: 0;
+        }
+        button:after{
+            content: "";
+            display: block;
+            width: 100%;
+            height: 1px;
+            background-color: $red;
+        }
+    }
+}
+
+// main sreen styles
+
+.main-screen {
+
+    text-align: center;
+    text-transform: uppercase;
+    // .main-screen__title
+
+    &__title {
+        //width: 652px;
+        font-size: 34px;
+        margin-bottom: 33px;
+    }
+
+    // .main-screen__subtitle
+
+    &__subtitle {
+        //width: 552px;
+        font-size: 18px;
+        margin-bottom: 100px;
+        letter-spacing: 1px;
+    }
+
+    // .main-screen_slider
+
+    &__slider {
+        position: relative;
+        margin-bottom: 65px;
+        img {
+            margin: 0px 70px;
+        }
+    }
+
+    // .main-screen__slider-subtitle
+
+    &__slider-subtitle {
+        font-size: 19px;
+        margin-bottom: 36px;
+        letter-spacing: 1px;
+    }
+
+    // .main-screen__button
+
+    &__button {
+        display: flex;
+        justify-content: center;
+        button {
+            width: 300px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            font-size: 18px;
+            color: #fff;
+            background-color: #FF2A54;
+            border: 0;
+        }
+    }
+}
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 3;
+
+    &-prev {
+        background-image: url(../img/arrow.png);
+        left: 0;
+    }
+
+    &-next {
+        background-image: url(../img/arrow.png);
+        right: 0;
+
+        transform: rotate(180deg);
+    }
+}
