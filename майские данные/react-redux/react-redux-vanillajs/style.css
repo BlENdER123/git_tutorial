@@ -1,0 +1,32 @@
+.app {
+    width: 900px;
+    margin: 50px auto;
+}
+
+button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.theme>button{
+    background-color: #1897B0;
+}
+.counter-plus>button{
+    background-color: blue;
+}
+.counter-minus>button{
+    background-color: red;
+}
+.counter-async>button{
+    background-color: green;
+}
+
+body.black{
+    background-color: #000;
+}
+body.black .counter{
+    color: white ;
+}
